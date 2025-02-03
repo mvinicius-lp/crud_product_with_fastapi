@@ -32,3 +32,12 @@ def update_product(product_id: int, product: Product, session: Session = Depends
     session.commit()
     session.refresh(db_product)
     return db_product
+
+@router.delete("/{product_id}", response_model=Product)
+def delete_product(product_id: int, product: Product, session: Session = Depends(get_session)):
+    db_product = session.get(Product, product_id)
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Prodct not found")
+    session.delete(db_product)
+    session.commit()
+    return {"ok": True}
